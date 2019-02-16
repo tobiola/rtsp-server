@@ -1,34 +1,73 @@
 package main
 
-import (
-    "fmt"
+import "fmt"
+import "html"
+import "log"
+import "net/http"
+import "strings"
+import "os/exec"
 
-    "github.com/djwackey/dorsvr/rtspserver"
-)
+type camera struct  {
+  name        string
+  url         string
+  liveStarted bool
+  liveffmpeg *Cmd
+}
+
+cameras := []camera {
+  camera {
+    name: "cam1",
+    url: "rtsp://192.168.0.124:554/mpeg4?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E",
+    liveStarted: false,
+  },
+}
+
+
+
+func liveStream(w http.ResponseWriter, r *http.Request) {
+
+  reqUrl := r.URL.Query()
+
+  // TODO: parse Url request
+  cameraName := reqUrl(
+
+  w.Header().Set("Connection": "keep-alive")
+  w.Header().Set("Content-Type": "video/mp4")
+  w.Header().Set("Accept-Ranges": "bytes")
+
+  for _, cam := range cameras {
+    // if cam.name === cameraName {
+
+    if !cam.liveStarted {
+      stdin := cam.liveffmpeg.StdinPipe()
+      stdout := cam.liveffmpeg.StdoutPipe()
+
+    }
+  }
+}
+
+func shutStream(event string) {
+
+  for _, cam := range cameras {
+
+    if cam.liveStarted {
+      cam.liveffmpeg.Process.Kill()
+      cam.liveStarted = false
+    }
+
+  }
+}
 
 func main() {
-    server := rtspserver.New(nil)
 
-    portNum := 8554
-    err := server.Listen(portNum)
-    if err != nil {
-        fmt.Printf("Failed to bind port: %d\n", portNum)
-        return
-    }
+  http.HandleFunc("/cam1", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+  })
 
-    if !server.SetupTunnelingOverHTTP(80) ||
-        !server.SetupTunnelingOverHTTP(8000) ||
-        !server.SetupTunnelingOverHTTP(8080) {
-        fmt.Printf("We use port %d for optional RTSP-over-HTTP tunneling, "+
-                   "or for HTTP live streaming (for indexed Transport Stream files only).\n", server.HTTPServerPortNum())
-    } else {
-        fmt.Println("(RTSP-over-HTTP tunneling is not available.)")
-    }
+  http.HandleFunc("/hi", func(w http.ResponseWriter, r *http.Request){
+    fmt.Fprintf(w, "Hi")
+  })
 
-    urlPrefix := server.RtspURLPrefix()
-    fmt.Println("This server's URL: " + urlPrefix + "<filename>.")
+  log.Fatal(http.ListenAndServe(":3000", nil))
 
-    server.Start()
-
-    select {}
 }
