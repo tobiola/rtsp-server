@@ -1,13 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Streamedian HTML5 RTSP/HLS player example</title>
+    <style>
+        #test_video {
+            width: 720px;
+        }
+    </style>
+</head>
 <body>
+<div>
+    <input id="stream_url">
+    <button id="set_new_url">Set</button>
+</div>
+<video id="test_video" controls autoplay src="http://127.0.0.1:3000/cam1">
+</video>
+<script src="https://cdn.bootcss.com/babel-polyfill/7.0.0-beta.2/polyfill.min.js"></script>
+<script src="streamedian.min.js"></script>
+<script src="test.js"></script>
 
-  <div id="rtsp_movie">
-  
-      <a href="rtsp://xxxx"><img border="0"
-                             alt="EXAMPE RTSP"
-                             width="426"
-                             height="240"/>click
-      to play RTSP</a>
-  
-  </div>
-  
 </body>
+</html>
