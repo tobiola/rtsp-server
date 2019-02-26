@@ -63,12 +63,12 @@ func main() {
       if !cam.liveStarted {
 
         // Start ffmpeg command
-        cam.liveffmpeg = exec.Command("ffmpeg", "-rtsp_transport", "tcp", "-i",
-                                   cam.rtsp, "-vcodec", "copy", "-f",
-                                   "mp4", "-movflags", "frag_keyframe+empty_moov",
-                                   "-reset_timestamps", "1", "-vsync", "1",
-                                   "-flags", "global_header", "-bsf:v",
-                                   "dump_extra", "-y", "-")
+        cam.liveffmpeg = exec.Command("ffmpeg", "-rtsp_transport", "udp",
+                                      "-i", cam.rtsp, "-vcodec", "copy",
+                                      "-tune", "zerolatency", "-f", "mp4",
+                                      "-movflags", "frag_keyframe+empty_moov",
+                                      "-reset_timestamps", "1", "-vsync", "1",
+                                      "-flags", "global_header", "-y", "-")
 
         cam.liveffmpeg.Stdout = w
         // stdin, _ := cam.liveffmpeg.StdinPipe()
