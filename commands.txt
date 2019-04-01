@@ -1,0 +1,5 @@
+ffmpeg -i rtsp://192.168.0.124:554/mpeg4?username=admin&password=E10ADC3949BA59ABBE56E057F20F883E -ar 32000 -threads 4 -f mpegts -codec:a mp2 -b:a 128k -bufsize 8192k -muxdelay 0.001 http://127.0.0.1/cam1/480/640
+
+ffmpeg -video_size {xres}x{yres} -i http://192.168.1.4/media/?action=stream -f mpegts -framerate 25 -codec:v mpeg1video -b:v {kbps}k -bf 0 -muxdelay 0.001 http://{video_host}:{video_port}/{stream_key}/{xres}/{yres}/
+
+
